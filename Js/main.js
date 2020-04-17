@@ -1,7 +1,6 @@
 let canvas = document.getElementById("Canvas"),
     ctx = canvas.getContext("2d");
     
-
 let ancho = canvas.width;
 let alto = canvas.height;
 
@@ -14,8 +13,8 @@ class Poligono {
         this.nombre = nombre;
         this.coords = [];
         this.speeds = [];
-        this.ballX = this.x + this.radio * Math.cos( (2 * Math.PI / this.vertices) * 0);
-        this.ballY = this.y + this.radio * Math.sin( (2 * Math.PI / this.vertices) * 0);
+        this.ballX = (x + radio * Math.cos( (2 * Math.PI / vertices) * 0));
+        this.ballY = (y + radio * Math.sin( (2 * Math.PI / vertices) * 0));
         this.contador = 1;
         this.velocidad = 0;
         this.color = color;
@@ -34,17 +33,17 @@ class Poligono {
         for(let i = 0; i < this.vertices; i++){
             let x = 0;
             let y = 0;
-            x = (this.x + this.radio * Math.cos( radianes * i));
-            y = (this.y + this.radio * Math.sin( radianes * i));
+            x = (this.x + this.radio * Math.cos( radianes * i)).toFixed();
+            y = (this.y + this.radio * Math.sin( radianes * i)).toFixed();
             
             this.coords.push({x, y});
             ctx.lineTo(x, y);
         };
-        
-        this.sacarVelocidades();
-        
         ctx.closePath();
         ctx.stroke();
+        
+        this.coords.push(this.coords[0])
+        this.sacarVelocidades();
     };
 
     // Dibuja la bola en la primera coordenada
@@ -54,12 +53,12 @@ class Poligono {
         ctx.arc(this.ballX, this.ballY, 10, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
-		/*ctx.srtroke();*/ /* Fijarme si el codigo funciona con esta linea sino borrar */
+		ctx.stroke();
     };
 
     // Si la coordenada de la bola es igual a la coordenada de alguno de los puntos cambia la velocidad a la siguiente coordenada
     moverBola() {
-        if(Math.round(this.coords[this.contador].x) == Math.round(this.ballX) && Math.round(this.coords[this.contador].y) == Math.round(this.ballY)) {
+        if(this.coords[this.contador].x == Math.round(this.ballX) && this.coords[this.contador].y == Math.round(this.ballY)) {
             this.contador++;
             this.velocidad++;
         };
@@ -68,6 +67,10 @@ class Poligono {
             this.contador = 0;
         };
 
+        if(this.velocidad >= this.coords.length - 1) {
+            this.velocidad = 0;
+        };
+        
         this.ballX += this.speeds[this.velocidad].x;
         this.ballY += this.speeds[this.velocidad].y;
     };
@@ -79,7 +82,6 @@ class Poligono {
         for(let j = 1; j < this.coords.length; j++) {
             let numX = this.coords[j].x - this.coords[j - 1].x;
             let numY = this.coords[j].y - this.coords[j - 1].y;
-
             this.speeds.push({
                 x: this.sacarPorcentaje(numX.toFixed()),
                 y: this.sacarPorcentaje(numY.toFixed())
@@ -102,7 +104,7 @@ const Poligonos = [
     cuadrado = new Poligono(ancho / 2, alto / 2, 100, 4, "Cuadrado", "#c0392b"),
     pentagono = new Poligono(ancho / 2, alto / 2, 150, 5, "Pentagono", "#2ecc71"),
     hexagono = new Poligono(ancho / 2, alto / 2, 200, 6, "Hexagono", "#9b59b6"),
-    heptagono = new Poligono(ancho / 2, alto / 2, 250, 7, "Heptagono", "#f1c40f"),
+    heptagono = new Poligono(ancho / 2, alto / 2, 245, 7, "Heptagono", "#f1c40f"),
     octagono = new Poligono(ancho / 2, alto / 2, 300, 8, "Octagono", "#e67e22")
 ];
 
@@ -117,7 +119,7 @@ function FPS() {
     
     // Debugg (Ingresar el poligono a debuggear)
     /* comprobarCoordenadaYBola(triangulo, 2); */
-    /* velocidadesPoligono(triangulo) */
+    /* velocidadesPoligono(cuadrado) */
     /* coordenadasPoligono(triangulo) */
     /* propiedadPoligono(triangulo.contador) */
     
